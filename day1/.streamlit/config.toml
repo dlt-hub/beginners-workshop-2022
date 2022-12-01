@@ -1,0 +1,25 @@
+[theme]
+
+# Primary accent for interactive elements
+primaryColor = "#E694FF"
+
+# Background color for the main content area
+backgroundColor = "#181937"
+
+# Background color for sidebar and most interactive widgets
+secondaryBackgroundColor = "#58C1D6"
+
+# Color used for almost all text
+textColor = "#DCDCDC"
+
+# Font family for all text in the app, except code blocks
+# Accepted values (serif | sans serif | monospace) 
+# Default: "sans serif"
+font = "sans serif"
+
+# preset Streamlit theme that your custom theme inherits from
+base="dark"
+
+[server]
+enableXsrfProtection = false
+enableCORS = false
