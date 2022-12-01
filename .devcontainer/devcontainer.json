@@ -22,8 +22,8 @@
 			// Set *default* container specific settings.json values on container create.
 			"settings": { 
 				"python.defaultInterpreterPath": "/usr/local/bin/python",
-				// "python.linting.enabled": false,
-				// "python.linting.pylintEnabled": true,
+				"python.linting.enabled": false,
+				"python.linting.pylintEnabled": false
 				// "python.formatting.autopep8Path": "/usr/local/py-utils/bin/autopep8",
 				// "python.formatting.blackPath": "/usr/local/py-utils/bin/black",
 				// "python.formatting.yapfPath": "/usr/local/py-utils/bin/yapf",
@@ -41,6 +41,9 @@
 				"ms-python.vscode-pylance"
 			]
 		}
+	},
+	"containerEnv": {
+		"RUNTIME__SENTRY_DSN": "https://7f31c0ebe25941e283e23c3ff7208469@o1061158.ingest.sentry.io/4504254854266880"
 	},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
