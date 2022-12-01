@@ -1,3 +1,4 @@
+import _env
 import dlt
 import datetime
 import requests
@@ -70,10 +71,10 @@ def players_games(chess_url, players, start_month=None, end_month=None):
             continue
         # do not download archive again
         if url in checked_archives:
-            # print(f"skipping archive {url}")
+            print(f"skipping archive {url}")
             continue
         else:
-            # print(f"getting archive {url}")
+            print(f"getting archive {url}")
             checked_archives.append(url)
         # get the filtered archive
         r = requests.get(url)

@@ -1,3 +1,4 @@
+import _env
 import streamlit as st
 import pandas as pd
 
@@ -5,7 +6,8 @@ import dlt
 from dlt.helpers.pandas import query_results_to_df
 
 # attach to existing pipeline
-pipeline = dlt.attach("chess")
+pipeline = dlt.attach(pipeline_name="chess")
+
 
 # Perform query.
 # Uses st.experimental_memo to only rerun when the query changes or after 10 min.
