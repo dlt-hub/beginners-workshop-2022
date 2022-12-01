@@ -1,0 +1,5 @@
+streamlit
+pandas
+altair
+db-dtypes
+python-dlt[bigquery]
