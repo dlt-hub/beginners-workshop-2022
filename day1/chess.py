@@ -1,4 +1,4 @@
-import _env
+from streamlit_app import _env
 import dlt
 import datetime
 import requests
