@@ -55,7 +55,7 @@
 	"forwardPorts": [2222],
 
 	// update python-dlt to newest version
-	"updateContentCommand": "pip3 install -U python-dlt[bigquery]",
+	"updateContentCommand": "sh .devcontainer/on_content_update.sh",
 	// Warning: postCreateCommand is run asynchronously after the codespaces has launched
 	// "postCreateCommand":
 

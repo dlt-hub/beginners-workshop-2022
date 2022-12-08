@@ -30,11 +30,9 @@ If you are not signed up for the workshop or you are connecting to codespaces wi
 ```toml
 [destination.bigquery.credentials]
 client_email = "chess-loader@workshop-2022-master.iam.gserviceaccount.com"
-# private_key = "set me up"
-# project_id = "set me up"
+private_key = "set me up"
+project_id = "set me up"
 ```
-
-**You need to comment all the lines in the**  `streamlit_app/_env.py`
 
 ## I get the following exception when running `chess.py`
 `google.api_core.exceptions.BadRequest: 400 POST https://bigquery.googleapis.com/bigquery/v2/projects/set%20me%20up/jobs?prettyPrint=false: Invalid project ID 'set me up'. Project IDs must contain 6-63 lowercase letters, digits, or dashes. Some project IDs also include domain name separated by a colon. IDs must start with a letter and may not end with a dash.`
