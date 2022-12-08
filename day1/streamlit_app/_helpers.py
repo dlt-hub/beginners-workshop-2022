@@ -1,4 +1,3 @@
-import _env
 import streamlit as st
 import pandas as pd
 
