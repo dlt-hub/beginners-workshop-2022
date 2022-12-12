@@ -5,14 +5,14 @@ TWITTER_API_URL = "https://api.twitter.com/2/tweets/%s"
 
 
 @dlt.source(max_table_nesting=2)
-def twitter_data(search_terms, start_time=None, end_time=None, twitter_bearer_token=dlt.secrets.value):
-    return search_tweets(search_terms, start_time=start_time, end_time=end_time, twitter_bearer_token=twitter_bearer_token)
+def twitter_data(search_terms, start_time=None, end_time=None, api_secret_key=dlt.secrets.value):
+    return search_tweets(search_terms, start_time=start_time, end_time=end_time, api_secret_key=api_secret_key)
 
 
-def _headers(twitter_bearer_token):
+def _headers(api_secret_key):
     """Constructs Bearer type authorization header as required by twitter api"""
     headers = {
-        "Authorization": f"Bearer {twitter_bearer_token}"
+        "Authorization": f"Bearer {api_secret_key}"
     }
     return headers
 
@@ -42,8 +42,8 @@ def _paginated_get(url, headers, params, max_pages=5):
 
 # explain the `dlt.resource` and the default table naming, write disposition etc.
 @dlt.resource(write_disposition="append")
-def search_tweets(search_terms, start_time=None, end_time=None, twitter_bearer_token=dlt.secrets.value):
-    headers = _headers(twitter_bearer_token)
+def search_tweets(search_terms, start_time=None, end_time=None, api_secret_key=dlt.secrets.value):
+    headers = _headers(api_secret_key)
     # get search results for each term
     for search_term in search_terms:
         params = {
@@ -81,19 +81,20 @@ def search_tweets(search_terms, start_time=None, end_time=None, twitter_bearer_t
 
 if __name__=='__main__':
     search_terms = ['python data engineer job']
+
     dataset_name = 'tweets'
 
     # init your pipeline and destination
     p = dlt.pipeline(
-                    pipeline_name="twitter_day3_04",
+                    pipeline_name="twitter_performance_hints",
                     destination="bigquery",
-                    dataset_name="tweets_day3_04",
+                    dataset_name="twitter_performance_hints",
                     # export the schema to this folder
-                    export_schema_path="schemas_04/export",
+                    export_schema_path="schema_performance_hints/export",
                     # import the schema from this folder, mind that this folder will be initialized with a schema for you
-                    import_schema_path="schemas_04/import",
+                    import_schema_path="schema_performance_hints/import",
                     # use full refresh while you experiment with your schema
-                     full_refresh=True
+                    full_refresh=False
                 )
 
     # how to proceed

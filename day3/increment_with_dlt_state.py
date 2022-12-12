@@ -7,19 +7,19 @@ TWITTER_API_URL = "https://api.twitter.com/2/tweets/%s"
 
 
 @dlt.source
-def twitter_data(search_terms, last_value=None, twitter_bearer_token=dlt.secrets.value):
-    return search_tweets(search_terms, last_value=last_value, twitter_bearer_token=twitter_bearer_token)
+def twitter_data(search_terms, last_value=None, api_secret_key=dlt.secrets.value):
+    return search_tweets(search_terms, last_value=last_value, api_secret_key=api_secret_key)
 
 
-def _headers(twitter_bearer_token):
+def _headers(api_secret_key):
     """Constructs Bearer type authorization header as required by twitter api"""
     headers = {
-        "Authorization": f"Bearer {twitter_bearer_token}"
+        "Authorization": f"Bearer {api_secret_key}"
     }
     return headers
 
 
-def _paginated_get(url, headers, params, max_pages=5):
+def _paginated_get(url, headers, params, max_pages=2):
     """Requests and yields up to `max_pages` pages of results as per twitter api documentation: https://developer.twitter.com/en/docs/twitter-api/pagination"""
     while True:
         response = requests.get(url, headers=headers, params=params)
@@ -44,8 +44,8 @@ def _paginated_get(url, headers, params, max_pages=5):
 
 
 @dlt.resource(write_disposition="append")
-def search_tweets(search_terms, last_value=None, twitter_bearer_token=dlt.secrets.value):
-    headers = _headers(twitter_bearer_token)
+def search_tweets(search_terms, last_value=None, api_secret_key=dlt.secrets.value):
+    headers = _headers(api_secret_key)
     # get dlt state to store last values of tweets for each search term we request
     last_value_cache = dlt.state().setdefault("last_value_cache", {})
 
@@ -56,7 +56,7 @@ def search_tweets(search_terms, last_value=None, twitter_bearer_token=dlt.secret
         print(f'last_value_cache: {last_value_cache[search_term]} for search term {search_term}')
         params = {
             'query': search_term,
-            'max_results': 20,  # maximum elements per page: we set it to low value to demonstrate the paginator
+            'max_results': 100,  # maximum elements per page: we set it to low value to demonstrate the paginator
             # basic twitter fields to be included in the data
             'tweet.fields': 'id,text,author_id,geo,created_at,lang,public_metrics,source',
             # uncomment below to include annotations and entities as described here: https://developer.twitter.com/en/docs/twitter-api/annotations/overview
@@ -97,7 +97,7 @@ if __name__ == "__main__" :
     search_terms = ['python data engineer job', "data engineering pipeline"]
 
     # init your pipeline and destination
-    p = dlt.pipeline(pipeline_name='twitter_day2_02_lw', destination="bigquery", dataset_name="tweets_data_day2_02_lw", full_refresh=False)
+    p = dlt.pipeline(pipeline_name='twitter_increment_with_state', destination="bigquery", dataset_name="twitter_increment_with_state", full_refresh=False)
     # print(json.dumps(list(search_tweets(search_terms, last_value=1598624590409834496)), indent=2))
     # exit()
 

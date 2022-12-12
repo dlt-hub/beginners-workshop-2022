@@ -1,0 +1,85 @@
+version: 2
+version_hash: vGL9NrrBCzLzMhcJ693z42CaGPUU2aBii9tDpeGVyq4=
+engine_version: 5
+name: twitter_data
+tables:
+  _dlt_version:
+    columns:
+      version:
+        data_type: bigint
+        nullable: false
+      engine_version:
+        data_type: bigint
+        nullable: false
+      inserted_at:
+        data_type: timestamp
+        nullable: false
+      schema_name:
+        data_type: text
+        nullable: false
+      version_hash:
+        data_type: text
+        nullable: false
+      schema:
+        data_type: text
+        nullable: false
+    write_disposition: skip
+    description: Created by DLT. Tracks schema updates
+  _dlt_loads:
+    columns:
+      load_id:
+        data_type: text
+        nullable: false
+      schema_name:
+        data_type: text
+        nullable: true
+      status:
+        data_type: bigint
+        nullable: false
+      inserted_at:
+        data_type: timestamp
+        nullable: false
+    write_disposition: skip
+    description: Created by DLT. Tracks completed loads
+  search_tweets:
+    columns:
+      search_term:
+        data_type: text
+        nullable: true
+        cluster: true
+      _dlt_load_id:
+        data_type: timestamp
+        nullable: false
+        partition: true
+    write_disposition: append
+settings:
+  default_hints:
+    not_null:
+    - _dlt_id
+    - _dlt_root_id
+    - _dlt_parent_id
+    - _dlt_list_idx
+    - _dlt_load_id
+    foreign_key:
+    - _dlt_parent_id
+    unique:
+    - _dlt_id
+    cluster:
+    - _dlt_load_id  # all columns with this name are cluster columns
+    partition:
+    - created_at  # all columns with this name are partition columns
+normalizers:
+  detections:
+  - timestamp
+  - iso_timestamp
+  names: dlt.common.normalizers.names.snake_case
+  json:
+    module: dlt.common.normalizers.json.relational
+    config:
+      max_nesting: 2
+      propagation:
+        root:
+          _dlt_load_id: _dlt_load_id  # propagate _dlt_load_id from parent to all child tables
+        tables:
+          search_tweets__data:
+            created_at: created_at  # propagate created_at from search_tweets__data to all child tables of it
