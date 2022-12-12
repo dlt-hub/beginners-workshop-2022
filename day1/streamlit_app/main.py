@@ -9,7 +9,7 @@ PAGES = {
     "Pipeline info": pipeline_info, 
     "Explore data": data_explorer,
     "SQL queries": sql_queries,
-    "Using SQL Joins": using_sql_views,
+    "Using SQL Views": using_sql_views,
   #  "Using SQL and Pandas": using_sql_pandas
 }
 

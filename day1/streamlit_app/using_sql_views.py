@@ -75,6 +75,6 @@ def write():
     FROM view_player_games
     group by 1,2
     """
-    st.subheader("What are my top 5 playlists?")
+    st.subheader("How rating of our selected grand masters change over time?")
     df = query_to_dataframe(ratings_by_time)
     st.dataframe(df)
