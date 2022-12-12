@@ -46,8 +46,10 @@ def write():
     query_block("What is the username of the alleged cheater named Hans Niemann?",1,
     query = 'select * from players_profiles where name like "%Niemann%" ')
 
-    query_block("What was the match he cheated in against Magnus Carlsen? Find the url and replay the match.",
-    2,query = 'select 1')
+    query_block("Can you find any of his games?",
+    2,query = """SELECT * FROM chess_data.players_games 
+WHERE lower(black__username)	= 'hansontwitch' 
+   OR lower(white__username) = 'hansontwitch'""")
 
 
 
