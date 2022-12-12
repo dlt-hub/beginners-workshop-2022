@@ -1,6 +1,8 @@
 import requests
 import dlt
 
+
+
 TWITTER_API_URL = "https://api.twitter.com/2/tweets/%s"
 
 
@@ -8,20 +10,23 @@ TWITTER_API_URL = "https://api.twitter.com/2/tweets/%s"
 # 0 - data and expansions are json blobs
 # 1 - the annotations, geo locations etc are json blobs
 # 2 - 3rd level structure is kept as json, this is probably the nicest schema
-@dlt.source(max_table_nesting=0)
-def twitter_data(search_terms, start_time=None, end_time=None, twitter_bearer_token=dlt.secrets.value):
-    return search_tweets(search_terms, start_time=start_time, end_time=end_time, twitter_bearer_token=twitter_bearer_token)
+max_table_nesting = 0
 
 
-def _headers(twitter_bearer_token):
+@dlt.source(max_table_nesting=max_table_nesting)
+def twitter_data(search_terms, start_time=None, end_time=None, api_secret_key=dlt.secrets.value):
+    return search_tweets(search_terms, start_time=start_time, end_time=end_time, api_secret_key=api_secret_key)
+
+
+def _headers(api_secret_key):
     """Constructs Bearer type authorization header as required by twitter api"""
     headers = {
-        "Authorization": f"Bearer {twitter_bearer_token}"
+        "Authorization": f"Bearer {api_secret_key}"
     }
     return headers
 
 
-def _paginated_get(url, headers, params, max_pages=5):
+def _paginated_get(url, headers, params, max_pages=3):
     """Requests and yields up to `max_pages` pages of results as per twitter api documentation: https://developer.twitter.com/en/docs/twitter-api/pagination"""
     while True:
         response = requests.get(url, headers=headers, params=params)
@@ -46,13 +51,13 @@ def _paginated_get(url, headers, params, max_pages=5):
 
 # explain the `dlt.resource` and the default table naming, write disposition etc.
 @dlt.resource(write_disposition="append")
-def search_tweets(search_terms, start_time=None, end_time=None, twitter_bearer_token=dlt.secrets.value):
-    headers = _headers(twitter_bearer_token)
+def search_tweets(search_terms, start_time=None, end_time=None, api_secret_key=dlt.secrets.value):
+    headers = _headers(api_secret_key)
     # get search results for each term
     for search_term in search_terms:
         params = {
             'query': search_term,
-            'max_results': 20,  # maximum elements per page: we set it to low value to demonstrate the paginator
+            'max_results': 50,  # maximum elements per page: we set it to low value to demonstrate the paginator
             'start_time': start_time,  # '2022-11-08T00:00:00.000Z',
             'end_time': end_time,  # '2022-11-09T00:00:00.000Z',
             # basic twitter fields to be included in the data
@@ -88,9 +93,9 @@ if __name__=='__main__':
 
     # init your pipeline and destination
     p = dlt.pipeline(destination="bigquery",
-                     dataset_name="tweets_maxnest_0",
+                     dataset_name=f"tweets_maxnest_{max_table_nesting}",
                      # export the schema to this folder
-                     export_schema_path="schemas_03",
+                     export_schema_path=f"schema_nesting/max_table_nesting_level_{max_table_nesting}",
                      # use full refresh while you experiment with your schema
                      full_refresh=True
                      )
