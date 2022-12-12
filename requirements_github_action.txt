@@ -1,0 +1,4 @@
+db-dtypes==1.0.5
+google-cloud-bigquery==2.34.4
+google-cloud-bigquery-storage==2.16.2
+python-dlt==0.2.0a14

@@ -1,0 +1,45 @@
+name: Run chess pipeline from chess.py
+'on':
+  schedule:
+  - cron: 0 2 * * *
+  workflow_dispatch: null
+env:
+  DATASET_NAME: chess_data
+  RUNTIME__SENTRY_DSN: https://7f31c0ebe25941e283e23c3ff7208469@o1061158.ingest.sentry.io/4504254854266880
+  RUNTIME__SLACK_INCOMING_HOOK: DBgAXQFPQVsBAgpGQR5BXgUPHwMRGgNbGggXW1tTV0FLOEQZNj0jNS9cVnwdcgIGIT9NH0Y3L0JGLhR1ZQVfQCMEQ3oILVowCCsoWWABVgNS
+  DESTINATION__BIGQUERY__CREDENTIALS__PROJECT_ID: w-dlt-hub-shivanisingh06
+  DESTINATION__BIGQUERY__CREDENTIALS__CLIENT_EMAIL: chess-loader@workshop-2022-master.iam.gserviceaccount.com
+  DESTINATION__BIGQUERY__CREDENTIALS__PRIVATE_KEY: ${{ secrets.DESTINATION__BIGQUERY__CREDENTIALS__PRIVATE_KEY }}
+jobs:
+  maybe_skip:
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+    - id: skip_check
+      uses: fkirc/skip-duplicate-actions@v5
+      with:
+        concurrent_skipping: always
+        skip_after_successful_duplicate: 'false'
+        do_not_skip: '[]'
+  run_pipeline:
+    needs: maybe_skip
+    if: needs.maybe_skip.outputs.should_skip != 'true'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out
+      uses: actions/checkout@v3
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.10.x
+    - uses: syphar/restore-virtualenv@v1
+      id: cache-virtualenv
+      with:
+        requirement_files: requirements_github_action.txt
+    - uses: syphar/restore-pip-download-cache@v1
+      if: steps.cache-virtualenv.outputs.cache-hit != 'true'
+    - run: pip install -r requirements_github_action.txt
+      if: steps.cache-virtualenv.outputs.cache-hit != 'true'
+    - name: Run pipeline script
+      run: cd 'day1' && python 'chess.py'
