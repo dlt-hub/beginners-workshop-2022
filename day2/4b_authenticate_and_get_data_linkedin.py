@@ -3,8 +3,8 @@ import requests
 
 
 @dlt.source
-def twitter_source(api_secret_key=dlt.secrets.value):
-    return twitter_resource(api_secret_key)
+def linkedin_source(api_secret_key=dlt.secrets.value):
+    return linkedin_resource(api_secret_key)
 
 
 def _create_auth_headers(api_secret_key):
@@ -16,11 +16,11 @@ def _create_auth_headers(api_secret_key):
 
 
 @dlt.resource(write_disposition="append")
-def twitter_resource(api_secret_key=dlt.secrets.value):
+def linkedin_resource(api_secret_key=dlt.secrets.value):
     headers = _create_auth_headers(api_secret_key)
-    search_term = 'data engineering'
-    params = {'query': search_term}
-    url = "https://api.twitter.com/2/tweets/search/recent"
+    search_term = ''
+    params = {'query': }
+    url = "https://api.linkedin.com/v2/rest/adAnalytics"
 
     # make an api call here
     response = requests.get(url, headers=headers, params=params)
