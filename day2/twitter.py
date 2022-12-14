@@ -65,11 +65,12 @@ if __name__=='__main__':
     search_terms = ['python data engineer']
     dataset_name ='tweets'
 
-    # search last hour of tweets
+    # search last day
     from datetime import datetime, timedelta, timezone
-
-    data_interval_start = datetime.now(timezone.utc)- timedelta(hours=3)
-    data_interval_end = datetime.now(timezone.utc)- timedelta(hours=2)
+    
+    last_midnight = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0) 
+    data_interval_start = last_midnight - timedelta(days=1)
+    data_interval_end = last_midnight
 
     start_time = data_interval_start.isoformat()
     end_time = data_interval_end.isoformat()
